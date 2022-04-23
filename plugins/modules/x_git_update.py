@@ -38,6 +38,7 @@ RETURN = """TBD"""
 # fmt: off
 
 import collections
+import collections.abc
 import os.path
 import pathlib
 import subprocess
@@ -61,9 +62,12 @@ def run_git(module, cwd, args, check=(0,)):
         text=True,
     )
     stdout, stderr = git.communicate()
-    if check and not isinstance(check, collections.Container):
+    if check and not isinstance(check, collections.abc.Container):
         check = (0,)
-    if isinstance(check, collections.Container) and git.returncode not in check:
+    if (
+        isinstance(check, collections.abc.Container)
+        and git.returncode not in check
+    ):
         module.fail_json(
             msg="Error running %r, stderr: %s" % (" ".join(cmd), stderr)
         )
